@@ -4,8 +4,9 @@ from discord.ext import commands
 # local modules
 from kit_modules import *
 
-
+# shortcuts
 ui = discord.ui
+OptionType = discord.SlashCommandOptionType
 
 class Bot(commands.Bot):
     def __init__(
