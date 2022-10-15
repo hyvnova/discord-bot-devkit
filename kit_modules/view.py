@@ -1,6 +1,7 @@
 from typing import Awaitable, Callable, Iterable
 import discord
 from discord import Component
+from .root import RootMessage
 
 
 async def default_on_timeout(view: discord.ui.View) -> None:
@@ -12,7 +13,7 @@ class View(discord.ui.View):
 
     def __init__(
         self,
-        original_message: discord.Message,
+        root_message: RootMessage,
         timeout: float | None = 60,
         disable_on_timeout: bool = True,
         on_timeout: Callable[[discord.ui.View], Awaitable[None]] = default_on_timeout,
@@ -20,7 +21,7 @@ class View(discord.ui.View):
 
         super().__init__(timeout=timeout, disable_on_timeout=disable_on_timeout)
 
-        self.original_message = original_message
+        self.root_message = root_message
 
         self.on_timeout_callback = on_timeout
 
@@ -34,8 +35,8 @@ class View(discord.ui.View):
         return await super().on_timeout()
 
     async def update(self):
-        if self.original_message:
-            await self.original_message.edit(view=self)
+        if self.root_message:
+            await self.root_message.edit(view=self)
 
     async def add_item(self, item: Component) -> None:
         super().add_item(item)

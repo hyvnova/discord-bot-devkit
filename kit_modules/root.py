@@ -1,7 +1,20 @@
 import discord
 from typing import *
 
-class RootMessage(discord.Message):
+class RootItems:
+    __slots__ = ("embed", "view", "__items")
+    def __init__(self, embed, view) -> None:
+        self.embed = embed
+        self.view = view
+        self.__items = (self.embed, self.view)
+
+    def __iter__(self):
+        return self.__items.__iter__()
+
+    def __next__(self):
+        return self.__items.__next__()
+
+class RootMessage:
 
     def __init__(self, message: discord.Message):
         self.original_message = message
@@ -35,6 +48,4 @@ class RootMessage(discord.Message):
         await self.original_message.edit(**kwargs)
 
         
-async def createRootMessage(ctx: discord.context) -> RootMessage:
-    msg = await ctx.channel.send("Preparing Contents....")
-    return RootMessage(msg)
+ 
