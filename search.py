@@ -22,7 +22,7 @@ def search_image(query: str, num=1, file_type=".jpg") -> List[str]:
     for item in res.get("items", []):
         link = item.get("link")
 
-        if link and link.endswith(file_type) and len(links) < num:
+        if link and (file_type == ".any" or link.endswith(file_type)) and len(links) < num:
             links.append(link)
 
     return links
