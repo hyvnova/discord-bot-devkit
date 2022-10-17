@@ -1,5 +1,4 @@
-from typing import Any, Callable, Dict, List, Union
-
+from typing import Any, Dict, List, Union
 
 def extract(obj: Union[Dict, object], keys: List[str] = None):
     if not keys:
@@ -11,10 +10,6 @@ def extract(obj: Union[Dict, object], keys: List[str] = None):
             keys = obj.keys()
 
     return [obj[key] for key in keys]
-
-
-def is_calleable(object: Any):
-    return "__call__" in object.__dict__
 
 class ExceptionList:
     """

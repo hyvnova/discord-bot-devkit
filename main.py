@@ -35,7 +35,7 @@ async def slash_search_image(
     await ctx.respond(f"**Query**: {query}\n**Type**: {type} \n" + "\n".join(links) if links else "No se encontraron imagenes correspondientes a la busqueda." )
 
 
-@bot.slash_command()
+@bot.slash_command(name="modal")
 async def modal_slash(ctx: discord.ApplicationContext):
     """Shows an example of a modal dialog being invoked from a slash command."""
 
@@ -47,38 +47,15 @@ async def modal_slash(ctx: discord.ApplicationContext):
     ])
 
 
-@bot.command(name="t")
-async def test(ctx):
-    root = await createRootMessage(ctx)
+@bot.slash_command(name="embed")
+async def create_embed(ctx):
 
-    embed = await Embed(root, title="Hiii").update()
+    root
 
-    await asyncio.sleep(5)
-
-    await embed.edit(title="Mooo")
-
-
-@bot.command(name="c")
-async def count(ctx, end: int):
-
-    root, items = await createRootMessage(ctx, create_embed=True)
-
-    for i in range(end):
-        await asyncio.sleep(1)
-        await items.embed.edit(title=str(i))
-
-
-@bot.command(name="cn")
-async def count(ctx, end: int):
-
-    embed = discord.Embed(title="0")
-    msg = await ctx.channel.send(embed=embed)
-
-    for i in range(end):
-        await asyncio.sleep(1)
-
-        embed.title = str(i)
-        await msg.edit(embed=embed)
+    data = {
+        "title" : "Sin titulo",
+        "description" : "Sin description"
+    }
 
 
 load_dotenv()

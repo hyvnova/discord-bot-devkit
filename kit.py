@@ -22,14 +22,13 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
 
-
 async def createRootMessage(
     ctx: discord.context,
     create_embed: bool = False,
     create_view: bool = False,
     create_modal: bool = False,
     loading_message: str = "Preparing Contents....",
-) -> Union[RootMessage, Tuple[RootMessage, RootItems]]:
+) -> RootMessage:
     """
     #### Creates a RootMessage and (optinal) items as `embed` or `view`
     If neither `create_embed`, `create_view` or `create_modal` are `True` only the root will be returned if any of them is `True` then a tuple will be returned
@@ -50,13 +49,12 @@ async def createRootMessage(
     msg = await ctx.channel.send(loading_message)
 
     root = RootMessage(
-        msg, ctx if isinstance(ctx, discord.ApplicationContext) else None
+        msg,
+        ctx if isinstance(ctx, discord.ApplicationContext) else None,
+        RootItems(
+            Embed(root) if create_embed else None,
+            View(root) if create_view else None,
+            Modal(root) if create_modal else None
+        )
     )
-
-    items = RootItems(
-        Embed(root) if create_embed else None,
-        View(root) if create_view else None,
-        Modal(root) if create_modal else None,
-    )
-
-    return (root, items) if any([create_embed, create_view, create_modal]) else root
+    return root

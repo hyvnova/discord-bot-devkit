@@ -1,30 +1,36 @@
-from dis import disco
+from collections import namedtuple
 import discord
 from typing import *
 
-class RootItems:
-    __slots__ = ("embed", "view", "modal", "__items")
-    def __init__(self, embed: discord.Embed, view: discord.ui.View, modal: discord.ui.Modal) -> None:
-        
-        self.embed: Union[discord.Embed, None] = embed
-        self.view: Union[discord.ui.View, None] = view
-        self.modal: Union[discord.ui.Modal, None] = modal
-
-        self.__items = (self.embed, self.view, self.modal)
-
-    def __iter__(self):
-        return self.__items.__iter__()
-
-    def __next__(self):
-        return self.__items.__next__()
+class RootItems(namedtuple):
+    embed: discord.Embed = None
+    view: discord.ui.View = None
+    modal: discord.ui.Modal = None
 
 class RootMessage:
-    def __init__(self, message: discord.Message, ctx: discord.ApplicationContext = None):
+    def __init__(self, message: discord.Message, ctx: discord.ApplicationContext = None, items: RootItems = RootItems(None, None, None)):
         self.original_message = message
         self.ctx = ctx
 
+        # set items
+        self.items = items
+
+        for key in items.__init__.keys():
+            self.__setattr__(
+                key,
+                property(
+                    self.items.__getattribute__(key), 
+                    lambda value: self.items.__setattr__(key, value)
+                )
+            )
+
         # use to remove the starting content from the message when it loads
         self.__loaded: bool = False
+
+
+
+    def __iter__(self):
+        return self.items
 
     async def edit( self,**kwargs):
         """
