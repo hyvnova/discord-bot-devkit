@@ -22,8 +22,9 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print(f"Logged in as {self.user}")
 
+
 async def createRootMessage(
-    ctx: discord.context,
+    ctx: Union[commands.Context, discord.ApplicationContext],
     create_embed: bool = False,
     create_view: bool = False,
     create_modal: bool = False,
@@ -34,27 +35,35 @@ async def createRootMessage(
     If neither `create_embed`, `create_view` or `create_modal` are `True` only the root will be returned if any of them is `True` then a tuple will be returned
 
     #### Example
-    ##### only root is returned
     `root = createRootMessage(ctx)`
 
-    ##### root and items are returned
-    `root, items = createRootMessage(ctx, create_embed=True)`
-    ##### items are unpackable and accessible as properties
+    ##### Pre-creation of objects (shortcut)
+    `root = createRootMessage(ctx, create_embed=True, create_view=True)`
+    #### items are unpackable and accessible as properties
+    ##### Unpack order: embeds, view, modal
     `embed, view, modal = items`
 
-    `item.embed`
+    `embed = root.embeds[0]`
+    ##### `create_embed` adds a `Embed` into `root.embeds`
     ```
     """
 
-    msg = await ctx.channel.send(loading_message)
+    msg = await (
+        ctx.respond(content=loading_message)
+        if isinstance(ctx, discord.ApplicationContext)
+        else ctx.channel.send(loading_message)
+    )
 
     root = RootMessage(
-        msg,
-        ctx if isinstance(ctx, discord.ApplicationContext) else None,
+        msg, ctx if isinstance(ctx, discord.ApplicationContext) else None
+    )
+
+    root._set_root_items(
         RootItems(
-            Embed(root) if create_embed else None,
+            EmbedList(Embed(root)) if create_embed else None,
             View(root) if create_view else None,
-            Modal(root) if create_modal else None
+            Modal(root, title="Default Title") if create_modal else None,
         )
     )
+
     return root

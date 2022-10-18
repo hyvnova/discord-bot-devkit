@@ -9,6 +9,7 @@ InputText = discord.InputText
 
 
 async def default_on_submit(modal: discord.ui.Modal, interaction: discord.Interaction):
+    print("called")
     embed = discord.Embed(title="Modal Results")
     for item in modal:
         embed.add_field(name=item.label, value=item.value)
@@ -20,7 +21,7 @@ class Modal(discord.ui.Modal):
         self,
         root_mesage: RootMessage,
         title: str,
-        timeout: float = 60,
+        timeout: float = 300,
         custom_id: str | None = None,
         on_submit: Callable[[discord.ui.Modal, discord.Interaction], Awaitable[None]] = default_on_submit
     ) -> None:

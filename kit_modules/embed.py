@@ -48,7 +48,6 @@ class EmbedTemplate(discord.Embed):
             fields=(fields or self.fields),
         )
 
-
 class Embed(discord.Embed):
     Exceptions = ExceptionList(
         NotExistingField = "You trying to add items to a field that doens't exists or is not declared in the Embed"
@@ -129,3 +128,10 @@ class Embed(discord.Embed):
 
         await self.update()
 
+class EmbedList(list):
+    def __init__(self, *items):
+        super().__init__(items)
+
+    def update(self, item: Embed) -> "EmbedList":
+        self[self.index(item)] = item
+        return self 
