@@ -1,6 +1,6 @@
 from typing import Any, Awaitable, Callable, List
 import discord
-from discord import ButtonStyle
+from discord import ButtonStyle, Emoji
 
 # shotcuts
 SelectOption = discord.SelectOption
@@ -9,43 +9,34 @@ SelectOption = discord.SelectOption
 class Button(discord.ui.Button):
     def __init__(
         self,
-        custom_id: str,
         callback: Callable[[discord.ui.Button, discord.Interaction], Awaitable[None]],
-        *args,
-        **kwargs
-    ):
+        label: str = None,
+        style: ButtonStyle = ButtonStyle.blurple,
+        disabled: bool = False,
+        url: str | None = None, 
+        emoji: str | Emoji | None =  None,
+        custom_id: str | None = None,
+        row: int | None = None    
+        ):
         """
-        Note: if no label is passed custom_id will be used as label
-
-        #### kwargs
-            - style: ButtonStyle
-            - label: str
-            - disabled: bool
-            - url: str
-            - emoji: str | Emoji
-            - row: int
+        Note: if no `custom_id` is passed `label` will be used as `custom_id`
         """
 
-        # if no label is passed use ID as label
-        if not kwargs.get("label"):
-            kwargs["label"] = custom_id
+        if not custom_id:
+            custom_id = label
 
-        if not kwargs.get("style"):
-            kwargs["style"] = ButtonStyle.primary
-
-        super().__init__(*args, **kwargs)
+        super().__init__(label=label, style=style, disabled=disabled, url=url, emoji=emoji, custom_id=custom_id, row=row)
         self.custom_id = custom_id
         self.callback = lambda interaction: callback(self, interaction)
 
-
 async def default_on_select(select_menu, interaction):
-     await interaction.response.send_message(f"**Selected:**{select_menu.values[0]}")
+     await interaction.response.send_message(f"**Selected:** {select_menu.selected}")
 
 class SelectMenu(discord.ui.Select):
     def __init__(
         self,
-        options: List[SelectOption],
         on_select: Callable[[discord.ui.Select, discord.Interaction], Awaitable[None]] = default_on_select,
+        options: List[SelectOption] = [],
         placeholder: str = "Select a option",
         min_values: int = 1,
         max_values: int = 1,
@@ -65,4 +56,8 @@ class SelectMenu(discord.ui.Select):
         )
 
         self.callback = lambda interaction: on_select(self, interaction)
+
+    @property
+    def selected(self) -> SelectOption:
+        return self.values[0] 
 

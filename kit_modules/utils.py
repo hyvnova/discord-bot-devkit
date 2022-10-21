@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Callable, Awaitable, TypedDict
+
 
 def extract(obj: Union[Dict, object], keys: List[str] = None):
     if not keys:
@@ -53,3 +54,9 @@ class ExceptionList:
             raise ValueError(f"{exception_name} is not a declared exception")
 
         raise exception_class(exception_message)
+
+class States:
+    def __init__(self, **kwargs) -> None:
+        for k,v in kwargs.items():
+            self.__setattr__(k,v)
+        

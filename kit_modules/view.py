@@ -1,9 +1,8 @@
 from typing import Awaitable, Callable, Iterable
 import discord
 from discord import Component
-
+from .types import _Root
 from .components import SelectMenu
-from .root import RootMessage
 
 
 async def default_on_timeout(view: discord.ui.View) -> None:
@@ -14,7 +13,7 @@ class View(discord.ui.View):
     """Kit View class"""
     def __init__(
         self,
-        root_message: RootMessage,
+        root: _Root,
         timeout: float | None = 300,
         disable_on_timeout: bool = True,
         on_timeout: Callable[[discord.ui.View], Awaitable[None]] = default_on_timeout,
@@ -22,7 +21,7 @@ class View(discord.ui.View):
 
         super().__init__(timeout=timeout, disable_on_timeout=disable_on_timeout)
 
-        self.root_message = root_message
+        self.root = root
 
         self.on_timeout_callback = on_timeout
 
@@ -41,8 +40,8 @@ class View(discord.ui.View):
         return await super().on_timeout()
 
     async def update(self):
-        if self.root_message:
-            await self.root_message.edit(view=self)
+        if self.root:
+            await self.root.edit(view=self)
 
     async def add_item(self, item: Component) -> None:
         self.__on_add_item(item)
@@ -62,4 +61,4 @@ class View(discord.ui.View):
         self.disable_all_items()
         self.stop()
 
-        self.update()
+        await self.update()

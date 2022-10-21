@@ -2,7 +2,7 @@ import discord, datetime
 from typing import *
 from discord import Colour, EmbedField
 from .utils import ExceptionList
-from .root import RootMessage
+from .types import _Root
 
 class EmbedTemplate(discord.Embed):
     def __init__(
@@ -55,7 +55,7 @@ class Embed(discord.Embed):
 
     def __init__(
         self,
-        root_message: RootMessage,
+        root: _Root,
         color: int | Colour = discord.Color.blue(),
         title: str | None = None,
         type: str = "rich",
@@ -76,14 +76,14 @@ class Embed(discord.Embed):
 
         self.custom_fields: Dict[str, List[Any]] = {}
 
-        self.root_message = root_message
+        self.root = root
 
         self.__loaded: bool = False
 
 
     async def update(self):
-        if self.root_message:
-            await self.root_message.edit(embed=self)
+        if self.root:
+            await self.root.edit(embed=self)
 
     async def create_field(self, field_name: str, field_items: List[Any] = []) -> None:
         self.custom_fields[field_name] = field_items
