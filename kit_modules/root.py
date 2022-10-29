@@ -2,7 +2,7 @@ from collections import namedtuple
 import discord
 from typing import *
 
-from .embed import Embed
+from .embed import EmbedList
 from .modal import Modal
 from .view import View
 
@@ -26,19 +26,21 @@ class Root:
         self.__set_edit_func()
 
         # set root items
-        self._set_root_items(RootItems(None, None, None))
-
+        self.view : View = None
+        self.embeds : EmbedList = None
+        self.modal : Modal = None
+        
         # use to remove the starting content from the message when it loads
         self.__loaded: bool = False
 
-    def items(self) -> Tuple[List[Embed], View, Modal]:
+    def items(self) -> Tuple[EmbedList, View, Modal]:
         """Returns A tuple containing root items"""
         return (self._items.embeds, self._items.view, self._items.modal)
         
     def __set_edit_func(self):
         self.__edit_func = (
-            self.origin.response.edit_message
-            if isinstance(self.origin, discord.Interaction)
+            self.origin.edit_original_response 
+            if isinstance(self.origin, discord.Interaction) 
             else self.origin.edit
         )
 

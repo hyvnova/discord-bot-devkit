@@ -24,10 +24,10 @@ class Bot(commands.Bot):
 
 
 async def createRoot(
-    ctx: Union[commands.Context, discord.ApplicationContext],
-    create_embed: bool = False,
-    create_view: bool = False,
-    create_modal: bool = False,
+    ctx: Union[commands.context.Context, discord.ApplicationContext],
+    create_embeds: bool = True,
+    create_view: bool = True,
+    create_modal: bool = True,
     loading_message: str = "Preparing Contents....",
 ) -> Root:
     """
@@ -49,19 +49,19 @@ async def createRoot(
     ```
     """
 
-    msg = await (
+    respondable : Union[discord.Interaction, discord.Message] = await (
         ctx.respond(content=loading_message)
-        if isinstance(ctx, discord.ApplicationContext) and not create_modal
+        if isinstance(ctx, discord.ApplicationContext)
         else ctx.channel.send(loading_message)
     )
 
     root = Root(
-        msg, ctx if isinstance(ctx, discord.ApplicationContext) else None
+        respondable, ctx if isinstance(ctx, discord.ApplicationContext) else None
     )
 
     root._set_root_items(
         RootItems(
-            EmbedList(Embed(root)) if create_embed else None,
+            EmbedList(Embed(root)) if create_embeds else None,
             View(root) if create_view else None,
             Modal(root, title="Default Title") if create_modal else None,
         )
