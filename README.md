@@ -36,7 +36,7 @@ root: Root = createRoot(ctx)
 # by default `root` has a `view` property
 root.view
 
-# You can add items to the view using `add_item` or  `add_items` methods
+# You can add items to the view using `add_items` method
 await root.view.add_items(
     Button(on_click_callback, "This is the label"),
 
@@ -47,7 +47,7 @@ await root.view.add_items(
     )
 )
 ```
--  **add_item** and **add_items** methods update the root, so changes will be displayed when they're called
+- **add_items** method update the root, so changes will be displayed when called
 
 - Check [Pycord API reference: discord.ui.View](https://docs.pycord.dev/en/stable/api.html?highlight=view#discord.ui.View) for more details.
 
