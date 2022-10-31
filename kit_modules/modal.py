@@ -9,7 +9,7 @@ InputText = discord.ui.InputText
 
 
 async def default_on_submit(modal: discord.ui.Modal, interaction: discord.Interaction):
-    embed = discord.Embed(title="Modal Results")
+    embed = discord.Embed(title="Modal Ouput")
     for item in modal:
         embed.add_field(name=item.label, value=item.value)
 

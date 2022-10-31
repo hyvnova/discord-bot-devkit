@@ -33,9 +33,10 @@ class Root:
         # use to remove the starting content from the message when it loads
         self.__loaded: bool = False
 
-    def items(self) -> Tuple[EmbedList, View, Modal]:
+    @property
+    def items(self) -> Tuple[EmbedList | None, View | None, Modal | None]:
         """Returns A tuple containing root items"""
-        return (self._items.embeds, self._items.view, self._items.modal)
+        return (self.embeds, self.view, self.modal)
         
     def __set_edit_func(self):
         self.__edit_func = (

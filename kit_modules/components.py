@@ -10,7 +10,7 @@ class Button(discord.ui.Button):
     def __init__(
         self,
         callback: Callable[[discord.ui.Button, discord.Interaction], Awaitable[None]],
-        label: str = None,
+        label: str,
         style: ButtonStyle = ButtonStyle.blurple,
         disabled: bool = False,
         url: str | None = None, 

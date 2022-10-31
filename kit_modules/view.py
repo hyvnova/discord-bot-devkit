@@ -43,13 +43,10 @@ class View(discord.ui.View):
         if self.root:
             await self.root.edit(view=self)
 
-    async def add_item(self, item: Component) -> None:
-        self.__on_add_item(item)
-        super().add_item(item)
-        # update view
-        await self.update()
-
-    async def add_items(self, items: Iterable[Component]) -> None:
+    async def add_items(self, *items: Component) -> Awaitable[None]:
+        """
+        Adds 1 or more items to the View, then updates it.
+        """
         for item in items:
             self.__on_add_item(item)
             super().add_item(item)

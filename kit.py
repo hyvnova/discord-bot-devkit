@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from typing import Union
 
 # local modules
 from kit_modules import *
@@ -29,23 +30,17 @@ async def createRoot(
     create_view: bool = True,
     create_modal: bool = True,
     loading_message: str = "Preparing Contents....",
-) -> Root:
+) -> Awaitable[Root]:
     """
-    #### Creates a RootMessage and (optinal) items as `embed` or `view`
-    If neither `create_embed`, `create_view` or `create_modal` are `True` only the root will be returned if any of them is `True` then a tuple will be returned
+    #### Creates a Root and (optinal) items as `embeds` or `view`
 
     #### Example
-    `root = createRootMessage(ctx)`
+    `root = await createRoot(ctx)`
 
-    ##### Pre-creation of objects (shortcut)
-    `root = createRootMessage(ctx, create_embed=True, create_view=True)`
     #### items are unpackable and accessible as properties
     `view = root.view`
     ##### Unpack order: embeds, view, modal
-    `embeds, view, modal = root.items()`
-
-    `embed = embeds[0]`
-    ##### `create_embed` adds a `Embed` into `root.embeds`
+    `embeds, view, modal = root.items`
     ```
     """
 
@@ -61,7 +56,7 @@ async def createRoot(
 
     root._set_root_items(
         RootItems(
-            EmbedList(Embed(root)) if create_embeds else None,
+            EmbedList(root) if create_embeds else None,
             View(root) if create_view else None,
             Modal(root, title="Default Title") if create_modal else None,
         )

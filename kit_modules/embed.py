@@ -49,20 +49,24 @@ class EmbedTemplate(discord.Embed):
         )
 
 class Embed(discord.Embed):
+    """
+    Creates a Embed
+    - Make sure you pass `root` if you creating the embed outside a `EmbedList`.`add_item` method
+    """
     Exceptions = ExceptionList(
         NotExistingField = "You trying to add items to a field that doens't exists or is not declared in the Embed"
     )
 
     def __init__(
         self,
-        root: _Root,
-        color: int | Colour = discord.Color.blue(),
         title: str | None = None,
+        color: int | Colour = discord.Color.blue(),
         type: str = "rich",
         url: str | None = None,
         description: str  = "Preparing Embed...",
         timestamp: datetime.datetime = None,
-        fields: List[EmbedField] | None = None
+        fields: List[EmbedField] | None = None,
+        root: _Root | None = None
     ):
         super().__init__(
             color=color,
@@ -74,16 +78,15 @@ class Embed(discord.Embed):
             fields=fields,
         )
 
+        self.root: _Root = root
         self.custom_fields: Dict[str, List[Any]] = {}
-
-        self.root = root
-
         self.__loaded: bool = False
 
 
     async def update(self):
+        """Updates embed at root embeds."""
         if self.root:
-            await self.root.edit(embed=self)
+            await self.root.embeds.update()
 
     async def create_field(self, field_name: str, field_items: List[Any] = []) -> None:
         self.custom_fields[field_name] = field_items
@@ -129,9 +132,23 @@ class Embed(discord.Embed):
         await self.update()
 
 class EmbedList(list):
-    def __init__(self, *items):
+    def __init__(self, root: _Root, *items):
+        self.root: _Root = root
         super().__init__(items)
 
-    def update(self, item: Embed) -> "EmbedList":
+    def update_item(self, item: Embed) -> "EmbedList":
         self[self.index(item)] = item
         return self 
+    
+    async def update(self) -> Awaitable[None]:
+        await self.root.edit(embeds=self)
+        
+    async def add_items(self, *embeds: Embed) -> Awaitable[None]:
+        """
+        Adds 1 or more items to the View, then updates it.
+        """
+        for embed in embeds:
+            embed.root = self.root
+            self.append(embed)
+            
+        await self.update()
