@@ -1,6 +1,6 @@
-from collections import namedtuple
 import discord
-from typing import *
+from typing import Tuple, Awaitable, Union
+from collections import namedtuple
 
 from .embed import EmbedList
 from .modal import Modal
@@ -38,14 +38,14 @@ class Root:
         """Returns A tuple containing root items"""
         return (self.embeds, self.view, self.modal)
         
-    def __set_edit_func(self):
+    def __set_edit_func(self) -> None:
         self.__edit_func = (
             self.origin.edit_original_response 
             if isinstance(self.origin, discord.Interaction) 
             else self.origin.edit
         )
 
-    def _set_root_items(self, items: RootItems):
+    def _set_root_items(self, items: RootItems) -> None:
         self._items = items
 
         for key in items._fields:
@@ -60,7 +60,7 @@ class Root:
     def __next__(self):
         return self._items.__next__()
 
-    async def edit(self, **kwargs):
+    async def edit(self, **kwargs) -> Awaitable[None]:
         """
         `content: str = None`,
         `embed: discord.Embed = None`,

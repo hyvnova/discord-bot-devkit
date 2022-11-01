@@ -1,5 +1,4 @@
-from typing import Any, Dict, List, Union, Callable, Awaitable, TypedDict
-
+from typing import Any, Dict, List, Union
 
 def extract(obj: Union[Dict, object], keys: List[str] = None):
     if not keys:

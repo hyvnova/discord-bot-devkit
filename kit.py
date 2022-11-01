@@ -24,7 +24,7 @@ class Bot(commands.Bot):
         print(f"Logged in as {self.user}")
 
 
-async def createRoot(
+async def create_root(
     ctx: Union[commands.context.Context, discord.ApplicationContext],
     create_embeds: bool = True,
     create_view: bool = True,

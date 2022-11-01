@@ -1,5 +1,5 @@
 import discord
-from typing import *
+from typing import Callable, Awaitable, List
 
 from .types import _Root
 
@@ -38,7 +38,7 @@ class Modal(discord.ui.Modal):
     def items(self) -> List[InputText]:
         return self.children
 
-    async def edit(self, **properties):
+    async def edit(self, **properties) -> Awaitable[None]:
         """
         #### Edits the properties of the modal then updates it
 

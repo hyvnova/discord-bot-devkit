@@ -1,13 +1,14 @@
-from typing import Awaitable, Callable, Iterable
+from ast import Await
 import discord
 from discord import Component
+from typing import Awaitable, Callable
+
 from .types import _Root
 from .components import SelectMenu
 
 
-async def default_on_timeout(view: discord.ui.View) -> None:
+async def default_on_timeout(view: discord.ui.View) -> Awaitable[None]:
     return None
-
 
 class View(discord.ui.View):
     """Kit View class"""

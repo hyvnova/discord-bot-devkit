@@ -5,7 +5,6 @@ from discord import ButtonStyle, Emoji
 # shotcuts
 SelectOption = discord.SelectOption
 
-
 class Button(discord.ui.Button):
     def __init__(
         self,

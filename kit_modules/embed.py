@@ -1,5 +1,5 @@
 import discord, datetime
-from typing import *
+from typing import Awaitable, List, Dict, Any
 from discord import Colour, EmbedField
 from .utils import ExceptionList
 from .types import _Root
