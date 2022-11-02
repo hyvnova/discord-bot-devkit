@@ -22,7 +22,7 @@ from dbdk import *
 @bot.command(name="sample")
 async def sample_command(ctx: commands.context.Context):
 
-    root: Root = await createRoot(ctx)
+    root: Root = await create_root(ctx)
 ```
 - Roots are the start and managers of everything in **DBDK**.
 In most cases you will only need **1 root** per command.
@@ -31,7 +31,7 @@ In most cases you will only need **1 root** per command.
 
 - As shown in the example above, we assuming this is inside a command function definition.
 ```py
-root: Root = createRoot(ctx)
+root: Root = await create_root(ctx)
 
 # by default `root` has a `view` property
 root.view
