@@ -14,7 +14,7 @@ pip install dbdk
 ```py
 from dbdk import * 
 ```
-*Note:* check **Imports and Defined members** to know what's being imported
+*Note:* check **[Imports and Defined members](#imports-and-defined-members)** to know what's being imported
 
 ## Creating A `Root`
 
@@ -87,7 +87,7 @@ await root.embeds.add_items(
 - Check [Pycord API reference: discord.Embed](https://docs.pycord.dev/en/stable/api.html?highlight=view#discord.Embed) for more details.
 
 
-# Imports & Defined Members
+# Imports And Defined Members
 
 - *This may vary a lot.*
 
