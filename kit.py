@@ -9,7 +9,6 @@ from kit_modules import *
 ui = discord.ui
 OptionType = discord.SlashCommandOptionType
 
-
 class Bot(commands.Bot):
     def __init__(
         self,
@@ -22,7 +21,6 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"Logged in as {self.user}")
-
 
 async def create_root(
     ctx: Union[commands.context.Context, discord.ApplicationContext],
