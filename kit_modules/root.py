@@ -3,15 +3,13 @@ from typing import Tuple, Awaitable, Union
 from collections import namedtuple
 
 from .embed import EmbedList
-from .modal import Modal
 from .view import View
 
 
-RootItems = namedtuple("RootItems", ["embeds", "view", "modal"])
+RootItems = namedtuple("RootItems", ["embeds", "view"])
 # class RootItems(TypedDict):
 #     embeds: discord.Embed = None
 #     view: discord.ui.View = None
-#     modal: discord.ui.Modal = None
 
 
 class Root:
@@ -28,15 +26,14 @@ class Root:
         # set root items
         self.view : View = None
         self.embeds : EmbedList = None
-        self.modal : Modal = None
         
         # use to remove the starting content from the message when it loads
         self.__loaded: bool = False
 
     @property
-    def items(self) -> Tuple[EmbedList | None, View | None, Modal | None]:
+    def items(self) -> Tuple[EmbedList | None, View | None]:
         """Returns A tuple containing root items"""
-        return (self.embeds, self.view, self.modal)
+        return (self.embeds, self.view)
         
     def __set_edit_func(self) -> None:
         self.__edit_func = (
@@ -83,9 +80,6 @@ class Root:
 
         await self.__edit_func(**kwargs)
 
-    async def add_modal(self, modal: discord.ui.Modal):
-        """Sends a modal, only allowed in slash commands context"""
-        await self.ctx.send_modal(modal)
 
     # NOT DONE YET
     async def relocate(self, respondable: Union[discord.Message,discord.Interaction], ctx: discord.ApplicationContext = None) -> None:

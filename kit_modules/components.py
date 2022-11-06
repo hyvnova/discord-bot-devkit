@@ -28,8 +28,8 @@ class Button(discord.ui.Button):
         self.custom_id = custom_id
         self.callback = lambda interaction: callback(self, interaction)
 
-async def default_on_select(select_menu, interaction):
-     await interaction.response.send_message(f"**Selected:** {select_menu.selected}")
+async def default_on_select(select_menu, interaction) -> Awaitable[None]:
+    await interaction.response.send_message(f"**Selected:** {select_menu.selected}")
 
 class SelectMenu(discord.ui.Select):
     def __init__(
@@ -58,5 +58,5 @@ class SelectMenu(discord.ui.Select):
 
     @property
     def selected(self) -> SelectOption:
-        return self.values[0] 
+        return [option for option in self.options if option.value == self.values[0]][0] 
 

@@ -28,7 +28,6 @@ async def create_root(
     ctx: Union[commands.context.Context, discord.ApplicationContext],
     create_embeds: bool = True,
     create_view: bool = True,
-    create_modal: bool = True,
     loading_message: str = "Preparing Contents....",
 ) -> Awaitable[Root]:
     """
@@ -39,8 +38,8 @@ async def create_root(
 
     #### items are unpackable and accessible as properties
     `view = root.view`
-    ##### Unpack order: embeds, view, modal
-    `embeds, view, modal = root.items`
+    ##### Unpack order: embeds, view
+    `embeds, view = root.items`
     ```
     """
 
@@ -58,7 +57,6 @@ async def create_root(
         RootItems(
             EmbedList(root) if create_embeds else None,
             View(root) if create_view else None,
-            Modal(root, title="Default Title") if create_modal else None,
         )
     )
 

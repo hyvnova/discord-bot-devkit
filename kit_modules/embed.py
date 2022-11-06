@@ -1,22 +1,23 @@
 import discord, datetime
 from typing import Awaitable, List, Dict, Any
 from discord import Colour, EmbedField
-from .utils import ExceptionList
+from .states import ExceptionList, State, process_states
 from .types import _Root
+from dataclasses import dataclass
 
 class EmbedTemplate(discord.Embed):
     def __init__(
         self,
         *,
-        color: int | Colour = Colour.blue(),
-        title: str = None,
+        color: Colour | State = Colour.blue(),
+        title: str | State = None,
         type: str = "rich",
-        url: str = None,
-        description: str = ...,
+        url: str | State = None,
+        description: str | State  = None,
         timestamp: datetime.datetime = None,
         fields: List[EmbedField] | None = None
     ):
-
+    
         super().__init__(
             color=color,
             title=title,
@@ -48,7 +49,20 @@ class EmbedTemplate(discord.Embed):
             fields=(fields or self.fields),
         )
 
+@dataclass
+class EmbedAuthor:
+    name: str
+    url: str
+    icon_url: str
+
+@dataclass
+class EmbedFooter:
+    text: str
+    icon_url: str
+        
+
 class Embed(discord.Embed):
+    
     """
     Creates a Embed
     - Make sure you pass `root` if you creating the embed outside a `EmbedList`.`add_item` method
@@ -59,15 +73,20 @@ class Embed(discord.Embed):
 
     def __init__(
         self,
-        title: str | None = None,
-        color: int | Colour = discord.Color.blue(),
+        title: str | State | None = None,
+        color: int | State | Colour = discord.Color.blue(),
         type: str = "rich",
-        url: str | None = None,
-        description: str  = "Preparing Embed...",
-        timestamp: datetime.datetime = None,
+        url: str | State | None = None,
+        description: str | State = "Preparing Embed...",
+        footer : Dict[str, str] | EmbedFooter = None,
+        author : EmbedAuthor | discord.Member | None = None,
+        image : str | State = None,
+        thumbnail : str | State = None,
+        timestamp: datetime.datetime | None = None,
         fields: List[EmbedField] | None = None,
         root: _Root | None = None
     ):
+        
         super().__init__(
             color=color,
             title=title,
@@ -81,8 +100,33 @@ class Embed(discord.Embed):
         self.root: _Root = root
         self.custom_fields: Dict[str, List[Any]] = {}
         self.__loaded: bool = False
+        
+        if author: self.author = author
+        if image: self.set_image(image)
+        if thumbnail: self.set_thumbnail(thumbnail)
+        if footer: self.footer = footer
 
+    # setters
+    @property
+    def author(self):
+        return self.author 
+    
+    @author.setter
+    def author(self, author: discord.Member | EmbedAuthor):
+        if isinstance(author, discord.Member):
+            author = EmbedAuthor((author.nick or author.name), None, (author.guild_avatar or author.avatar).url)
 
+        self.set_author(**{k:v for k,v in author.__dict__.items() if v and not k.startswith("_")})
+        
+    @property
+    def footer(self):
+        return self.footer
+    
+    @footer.setter
+    def footer(self, footer: EmbedFooter):
+        self.set_footer(**{k:v for k,v in footer.__dict__.items() if v and not k.startswith("_")})
+
+    # methods
     async def update(self):
         """Updates embed at root embeds."""
         if self.root:
@@ -110,12 +154,15 @@ class Embed(discord.Embed):
 
         #### Properties
         `color: int | Colour`,
-        `title: str | None`,
+        `title: str`,
         `type: str = "rich"`,
-        `url: str | None`,
-        `description: str | None`,
+        `url: str`,
+        `description: str`,
+        `footer: EmbedFooter`
+        `author : EmbedAuthor`
         `timestamp: datetime.datetime`,
-        `fields: List[EmbedField] | None`
+        `fields: List[EmbedField]`
+        `field_at` : Tuple[index, EmbedField]
         """
 
         # remove starting description
@@ -127,9 +174,27 @@ class Embed(discord.Embed):
             self.__loaded = True
 
         for name, value in properties.items():
-            setattr(self, name, value)
+            if name == 'image':
+                self.set_image(url=value)
+                
+            elif name == "thumbnail":
+                self.set_thumbnail()
+                
+            elif name == "field_at":
+                index, field = value
+                self.set_field_at(index, name=field.name, value=field.value, inline=field.inline)
+            
+            else:
+                #  try setting attribute setting directly
+                try:
+                    setattr(self, name, value)
+                except AttributeError as e:
+                    print("Exception was most-likely caused because you tried to set a property that doesn't exits or cannot be setted to Embed at edit method")
+                    raise e
+            
 
         await self.update()
+
 
 class EmbedList(list):
     def __init__(self, root: _Root, *items):
