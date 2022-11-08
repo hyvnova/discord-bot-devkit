@@ -26,7 +26,7 @@ class View(discord.ui.View):
 
         self.on_timeout_callback = on_timeout
 
-    def __on_add_item(self, item):
+    def __on_add_item(self, item) -> None:
         # get on select from select menu
         if isinstance(item, SelectMenu):
             self.select_callback = item.callback
@@ -40,7 +40,7 @@ class View(discord.ui.View):
 
         return await super().on_timeout()
 
-    async def update(self):
+    async def update(self) -> Awaitable[None]:
         if self.root:
             await self.root.edit(view=self)
 
@@ -60,3 +60,8 @@ class View(discord.ui.View):
         self.stop()
 
         await self.update()
+        
+    async def replace(self, item: Component, new : Component) -> Awaitable[None]:
+        """Replaces an item from the view with a new one, then updates the view"""
+        self.remove_item(item)
+        await self.add_items(new)

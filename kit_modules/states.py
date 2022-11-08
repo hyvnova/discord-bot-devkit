@@ -105,8 +105,8 @@ class State:
         self.on_delete.append(lambda: delattr(cls, name) )
         
         setattr(cls, name, property(
-            lambda instance: self.get(),
-            lambda instance, value: None
+            lambda instance: self.get(),  # getter
+            lambda instance, value: None  # setter
         ))
     
     def __del__(self) -> None:

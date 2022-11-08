@@ -78,7 +78,7 @@ class Embed(discord.Embed):
         type: str = "rich",
         url: str | State | None = None,
         description: str | State = "Preparing Embed...",
-        footer : Dict[str, str] | EmbedFooter = None,
+        footer : EmbedFooter = None,
         author : EmbedAuthor | discord.Member | None = None,
         image : str | State = None,
         thumbnail : str | State = None,
@@ -102,8 +102,8 @@ class Embed(discord.Embed):
         self.__loaded: bool = False
         
         if author: self.author = author
-        if image: self.set_image(image)
-        if thumbnail: self.set_thumbnail(thumbnail)
+        if image: self.set_image(url=image)
+        if thumbnail: self.set_thumbnail(url=thumbnail)
         if footer: self.footer = footer
 
     # setters
@@ -153,16 +153,16 @@ class Embed(discord.Embed):
         #### Edits the properties of the embed then updates it
 
         #### Properties
-        `color: int | Colour`,
-        `title: str`,
-        `type: str = "rich"`,
-        `url: str`,
-        `description: str`,
-        `footer: EmbedFooter`
-        `author : EmbedAuthor`
-        `timestamp: datetime.datetime`,
-        `fields: List[EmbedField]`
-        `field_at` : Tuple[index, EmbedField]
+        - `title` : `str` | `State`,
+        - `color` : `int` | `State` | `Colour`,
+        - `url`: `str` | `State`,
+        - `description` : `str` | `State`,
+        - `footer` : `EmbedFooter`,
+        - `author` : `EmbedAuthor` | `discord.Member`,
+        - `image` : `str` | `State`,
+        - `thumbnail` : `str` | `State`,
+        - `timestamp` : `datetime.datetime`,
+        - `field_at` : `Tuple[int, EmbedField]`
         """
 
         # remove starting description
@@ -178,7 +178,7 @@ class Embed(discord.Embed):
                 self.set_image(url=value)
                 
             elif name == "thumbnail":
-                self.set_thumbnail()
+                self.set_thumbnail(url=value)
                 
             elif name == "field_at":
                 index, field = value
