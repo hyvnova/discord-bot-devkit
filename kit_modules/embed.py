@@ -163,6 +163,7 @@ class Embed(discord.Embed):
         - `thumbnail` : `str` | `State`,
         - `timestamp` : `datetime.datetime`,
         - `field_at` : `Tuple[int, EmbedField]`
+        - `fields` : `List[EmbedField]`
         """
 
         # remove starting description

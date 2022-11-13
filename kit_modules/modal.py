@@ -63,11 +63,11 @@ class Modal(discord.ui.Modal):
         """Opens the modal dialog, becareful interaction isn't alredy responded"""
         await interaction.response.send_modal(self)
     
-    def as_dict(self, key: str = "custom_id", value: str = "value", skip_if_null: bool = False) -> Dict[Any, Any]:
+    def as_dict(self, key: str = "custom_id", value: str = "value", skip_null: bool = False) -> Dict[Any, Any]:
         return {
             getattr(item, key) : getattr(item, value) 
             for item in self.children
-            if (skip_if_null and getattr(item, value))
+            if (skip_null == False) or (skip_null==True and bool(getattr(item, value)) == True)
         }
         
     # default on submit
