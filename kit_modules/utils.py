@@ -1,16 +1,10 @@
-from typing import Any, Dict, List, Union, Callable, Awaitable, TypedDict
+from typing import Any, Dict
 
+import string, random
 
-def extract(obj: Union[Dict, object], keys: List[str] = None):
-    if not keys:
-        try:
-            keys = obj.__dict__.keys()
-            obj = obj.__dict__
-
-        except:
-            keys = obj.keys()
-
-    return [obj[key] for key in keys]
+def get_random_string(length) -> str:
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
 
 class ExceptionList:
     """
@@ -55,8 +49,5 @@ class ExceptionList:
 
         raise exception_class(exception_message)
 
-class States:
-    def __init__(self, **kwargs) -> None:
-        for k,v in kwargs.items():
-            self.__setattr__(k,v)
-        
+
+     

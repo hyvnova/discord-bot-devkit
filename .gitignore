@@ -1,6 +1,6 @@
 .env
 /__pycache__/
 /kit_modules/__pycache__/
-/main.py
-/search.py
-/test.py
+main.py
+test.py
+log.md

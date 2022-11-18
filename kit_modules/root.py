@@ -1,17 +1,15 @@
-from collections import namedtuple
 import discord
-from typing import *
+from typing import Tuple, Awaitable, Union
+from collections import namedtuple
 
 from .embed import EmbedList
-from .modal import Modal
 from .view import View
 
 
-RootItems = namedtuple("RootItems", ["embeds", "view", "modal"])
+RootItems = namedtuple("RootItems", ["embeds", "view"])
 # class RootItems(TypedDict):
 #     embeds: discord.Embed = None
 #     view: discord.ui.View = None
-#     modal: discord.ui.Modal = None
 
 
 class Root:
@@ -28,23 +26,23 @@ class Root:
         # set root items
         self.view : View = None
         self.embeds : EmbedList = None
-        self.modal : Modal = None
         
         # use to remove the starting content from the message when it loads
         self.__loaded: bool = False
 
-    def items(self) -> Tuple[EmbedList, View, Modal]:
+    @property
+    def items(self) -> Tuple[EmbedList | None, View | None]:
         """Returns A tuple containing root items"""
-        return (self._items.embeds, self._items.view, self._items.modal)
+        return (self.embeds, self.view)
         
-    def __set_edit_func(self):
+    def __set_edit_func(self) -> None:
         self.__edit_func = (
             self.origin.edit_original_response 
             if isinstance(self.origin, discord.Interaction) 
             else self.origin.edit
         )
 
-    def _set_root_items(self, items: RootItems):
+    def _set_root_items(self, items: RootItems) -> None:
         self._items = items
 
         for key in items._fields:
@@ -59,7 +57,7 @@ class Root:
     def __next__(self):
         return self._items.__next__()
 
-    async def edit(self, **kwargs):
+    async def edit(self, **kwargs) -> Awaitable[None]:
         """
         `content: str = None`,
         `embed: discord.Embed = None`,
@@ -82,9 +80,6 @@ class Root:
 
         await self.__edit_func(**kwargs)
 
-    async def add_modal(self, modal: discord.ui.Modal):
-        """Sends a modal, only allowed in slash commands context"""
-        await self.ctx.send_modal(modal)
 
     # NOT DONE YET
     async def relocate(self, respondable: Union[discord.Message,discord.Interaction], ctx: discord.ApplicationContext = None) -> None:

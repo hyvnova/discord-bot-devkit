@@ -1,13 +1,13 @@
-from typing import Awaitable, Callable, Iterable
 import discord
 from discord import Component
+from typing import Awaitable, Callable
+
 from .types import _Root
 from .components import SelectMenu
 
 
-async def default_on_timeout(view: discord.ui.View) -> None:
+async def default_on_timeout(view: discord.ui.View) -> Awaitable[None]:
     return None
-
 
 class View(discord.ui.View):
     """Kit View class"""
@@ -25,7 +25,7 @@ class View(discord.ui.View):
 
         self.on_timeout_callback = on_timeout
 
-    def __on_add_item(self, item):
+    def __on_add_item(self, item) -> None:
         # get on select from select menu
         if isinstance(item, SelectMenu):
             self.select_callback = item.callback
@@ -39,17 +39,14 @@ class View(discord.ui.View):
 
         return await super().on_timeout()
 
-    async def update(self):
+    async def update(self) -> Awaitable[None]:
         if self.root:
             await self.root.edit(view=self)
 
-    async def add_item(self, item: Component) -> None:
-        self.__on_add_item(item)
-        super().add_item(item)
-        # update view
-        await self.update()
-
-    async def add_items(self, items: Iterable[Component]) -> None:
+    async def add_items(self, *items: Component) -> Awaitable[None]:
+        """
+        Adds 1 or more items to the View, then updates it.
+        """
         for item in items:
             self.__on_add_item(item)
             super().add_item(item)
@@ -62,3 +59,8 @@ class View(discord.ui.View):
         self.stop()
 
         await self.update()
+        
+    async def replace(self, item: Component, new : Component) -> Awaitable[None]:
+        """Replaces an item from the view with a new one, then updates the view"""
+        self.remove_item(item)
+        await self.add_items(new)

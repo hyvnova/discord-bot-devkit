@@ -1,4 +1,4 @@
-from typing import *
+from typing import TypeVar
 
 #This Types are used for typing hints
 
