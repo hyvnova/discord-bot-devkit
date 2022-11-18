@@ -1,10 +1,22 @@
 import discord, datetime
 from typing import Awaitable, List, Dict, Any
 from discord import Colour, EmbedField
-from .utils import ExceptionList
+from .states import ExceptionList, State, process_states
 from .types import _Root
 from dataclasses import dataclass
 
+
+@dataclass
+class EmbedAuthor:
+    name: str
+    url: str
+    icon_url: str
+
+@dataclass
+class EmbedFooter:
+    text: str
+    icon_url: str
+        
 
 @dataclass
 class EmbedAuthor:
